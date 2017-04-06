@@ -8,15 +8,62 @@
 }
 
 .App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+  width: 100%;
+  background-color: #888;
+  height: 80px;
+  padding: 40px;
   color: white;
 }
 
 .App-intro {
   font-size: large;
 }
+
+h1 {
+  font-size: 160px;
+  margin: auto;
+}
+
+h2 {
+   font-size: 60px;
+   margin: 20px;
+}
+
+/***********
+List Styles
+************/
+
+.Lists {
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.List {
+  width: 300px;
+}
+
+.todo-item {
+  width: 400px;
+  height: 50px;
+}
+
+.container {
+  float: left;
+  width: 400px;
+  margin: 10px;
+  border-style: solid;
+  border-color: #DDDDDD;
+  border-width: 1px;
+  padding: 20px;
+}
+
+.add-todo-button {
+  margin-top: 20px;
+}
+
+
+
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
