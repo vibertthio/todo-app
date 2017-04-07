@@ -6,6 +6,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 // import removeSVG from 'material-ui/svg-icons/action/delete';
+import editSvg from './../svg/edit.svg';
 
 import TodoItem from './TodoItem';
 
@@ -25,7 +26,6 @@ class TodoList extends React.Component {
     this.handleKey = this.handleKey.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   }
-
 
   /**
    * list
@@ -62,19 +62,49 @@ class TodoList extends React.Component {
   }
 
   /**
+   * [title description]
+   * @return {[type]} [description]
+   */
+  title() {
+    if (this.props.editingName) {
+      return (
+        <div className="list-title">
+          <TextField>
+            {this.props.name}
+            <img
+              src={editSvg}
+              className="edit-svg"
+              alt="edit"
+              onClick={() => alert('editing name')}
+            />
+          </TextField>
+        </div>
+      );
+    } else {
+      return (
+        <div className="list-title">
+          <h2>
+            {this.props.name}
+            <img
+              src={editSvg}
+              className="edit-svg"
+              alt="edit"
+              onClick={() => alert('not editing name')}
+            />
+          </h2>
+        </div>
+      );
+    }
+  }
+
+  /**
    * Handle remove event of new item.
    * @param {int} idx
    */
   handleRemove(idx) {
     console.log(`remove item #${idx}`);
-    console.log(this.state.items);
-    const items = this.state.items;
-    items.splice(idx, 1);
-    console.log(items);
-    this.setState({
-      nOfItems: this.state.nOfItems - 1,
-      items,
-    });
+    const id = this.props.id;
+    this.props.handleRemove(id, idx);
   }
 
   /**
@@ -82,9 +112,7 @@ class TodoList extends React.Component {
    * @param {Event} e edit event
    */
   handleEdit(e) {
-    const input = e.currentTarget.value;
-    console.log(input);
-    this.props.handleEdit(this.props.id, input);
+    this.props.handleEdit(this.props.id, e.currentTarget.value);
   }
 
   /**
@@ -106,7 +134,14 @@ class TodoList extends React.Component {
     return (
       <div className="container">
         <div className="list-title">
-          <h2>{this.props.name}</h2>
+          <h2>
+            {this.props.name}
+            <img
+              src={editSvg}
+              className="edit-svg"
+              alt="edit"
+            />
+          </h2>
         </div>
 
         <List className="List">
@@ -142,6 +177,7 @@ TodoList.propTypes = {
   inputValue: React.PropTypes.string.isRequired,
   nOfItems: React.PropTypes.number.isRequired,
   items: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  editingName: React.PropTypes.arrayOf(React.PropTypes.bool).isRequired,
   handleEdit: React.PropTypes.func.isRequired,
   handleClick: React.PropTypes.func.isRequired,
   handleRemove: React.PropTypes.func.isRequired,

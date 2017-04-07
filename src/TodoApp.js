@@ -20,33 +20,18 @@ class TodoApp extends Component {
       nOfItems: [],
       items: [],
       inputValues: [],
+      editingName: [],
     };
 
     // this.handleEdit = this.handleEdit.bind(this);
-    this.handleNewItem = this.handleNewItem.bind(this);
-    this.handleRemoveItem = this.handleRemoveItem.bind(this);
+    // this.handleNewItem = this.handleNewItem.bind(this);
+    // this.handleRemoveItem = this.handleRemoveItem.bind(this);
   }
 
   /**
-   * [handleRemoveItem description]
-   * @param  {[type]} idList [description]
-   * @param  {[type]} idItem [description]
-   */
-  handleRemoveItem(idList, idItem) {
-    const items = this.state.items;
-    const ls = items[idList];
-    ls.splice(idItem, 1);
-    items[idList] = ls;
-
-    this.setState({
-      items,
-    });
-  }
-
-  /**
-   * [handleNewItem description]
-   * @param  {[type]} idList [description]
-   */
+  * [handleNewItem description]
+  * @param  {[type]} idList [description]
+  */
   handleNewItem(idList) {
     console.log(this);
     const input = this.state.inputValues[idList];
@@ -63,12 +48,34 @@ class TodoApp extends Component {
       const inputValues = this.state.inputValues.slice();
       inputValues[idList] = '';
 
+      const editingName = this.state.editingName.slice();
+      editingName[idList] = false;
+
       this.setState({
         items,
         nOfItems,
         inputValues,
+        editingName,
       });
     }
+  }
+
+  /**
+   * [handleRemoveItem description]
+   * @param  {[type]} idList [description]
+   * @param  {[type]} idItem [description]
+   */
+  handleRemoveItem(idList, idItem) {
+    const nOfItems = this.state.nOfItems.slice();
+    nOfItems[idList] -= 1;
+
+    const items = this.state.items.slice();
+    items[idList].splice(idItem, 1);
+
+    this.setState({
+      nOfItems,
+      items,
+    });
   }
 
   /**
@@ -77,8 +84,7 @@ class TodoApp extends Component {
    * @param  {[type]} input  [description]
    */
   handleEdit(idList, input) {
-    console.log('editting..');
-    const inputs = this.state.inputValues;
+    const inputs = this.state.inputValues.slice();
     inputs[idList] = input;
     this.setState({
       inputValues: inputs,
@@ -108,6 +114,18 @@ class TodoApp extends Component {
     });
     console.log('New List!');
     console.log(`number of lists : ${this.state.nOfLists}`);
+  }
+
+  /**
+   * [handleStartEditName description]
+   * @param  {number} idList id of the list entering edit mode
+   */
+  handleStartEditName(idList) {
+    const editingName = this.state.editingName;
+    editingName[idList] = !editingName[idList];
+    this.setState({
+      editingName,
+    });
   }
 
   /**
@@ -143,9 +161,11 @@ class TodoApp extends Component {
                 inputValue={this.state.inputValues[i]}
                 nOfItems={this.state.nOfItems[i]}
                 items={this.state.items[i]}
+                editingName={this.state.editingName[i]}
                 handleEdit={(idl, input) => this.handleEdit(idl, input)}
                 handleClick={idl => this.handleNewItem(idl)}
-                handleRemove={this.handleRemoveItem}
+                handleRemove={(idl, idi) => this.handleRemoveItem(idl, idi)}
+                handleStartEditName={idl => this.handleStartEditName(idl)}
               />
             </li>)
           }

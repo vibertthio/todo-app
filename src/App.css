@@ -1,3 +1,7 @@
+/***********
+React App
+************/
+
 .App {
   text-align: center;
 }
@@ -19,6 +23,11 @@
   font-size: large;
 }
 
+
+/***********
+Global
+************/
+
 h1 {
   font-size: 160px;
   margin: auto;
@@ -28,6 +37,13 @@ h2 {
    font-size: 60px;
    margin: 20px;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
 
 /***********
 List Styles
@@ -60,6 +76,13 @@ List Styles
 
 .add-todo-button {
   margin-top: 20px;
+}
+
+.edit-svg {
+  float: right;
+  margin: 25px;
+  position: relative;
+  opacity:0.2;
 }
 
 
