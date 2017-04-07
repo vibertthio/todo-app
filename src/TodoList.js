@@ -3,10 +3,11 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import { List, ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 // import removeSVG from 'material-ui/svg-icons/action/delete';
 import editSvg from './../svg/edit.svg';
+import deleteSvg from './../svg/delete.svg';
+import addSvg from './../svg/add.svg';
 
 import TodoItem from './TodoItem';
 
@@ -33,7 +34,7 @@ class TodoList extends React.Component {
    * @return {Element}
    */
   list() {
-    const n = this.props.nOfItems;
+    const n = this.props.list.items.length;
     const list = Array(n).fill().map((x, i) => i);
     return (
       list.map(
@@ -41,8 +42,11 @@ class TodoList extends React.Component {
           <ListItem
             className="todo-item"
             key={i.toString()}
-            hoverColor="rgba(200, 200, 200, 1.0)"
-            leftIcon={<Checkbox />}
+            hoverColor="rgba(200, 240, 200, 0.4)"
+            leftIcon={<Checkbox
+              checked={this.props.list.items[i].finished}
+              onTouchTap={() => this.props.handleChecked(this.props.id, i)}
+            />}
             rightIcon={
               <NavigationClose
                 onTouchTap={() => {
@@ -52,7 +56,7 @@ class TodoList extends React.Component {
             }
           >
             <TodoItem
-              content={this.props.items[i]}
+              item={this.props.list.items[i]}
             />
           </ListItem>
         ),
@@ -66,35 +70,102 @@ class TodoList extends React.Component {
    * @return {[type]} [description]
    */
   title() {
-    if (this.props.editingName) {
-      return (
-        <div className="list-title">
-          <TextField>
-            {this.props.name}
-            <img
-              src={editSvg}
-              className="edit-svg"
-              alt="edit"
-              onClick={() => alert('editing name')}
-            />
-          </TextField>
-        </div>
+    const list = this.props.list;
+    let name = null;
+    if (list.editingName) {
+      name = (
+        <TextField
+          className="edit-name"
+          id="edit-name-text"
+          value={list.name}
+          onChange={e =>
+            this.props.handleEditName(
+              this.props.id,
+              e.currentTarget.value,
+            )
+          }
+          onKeyUp={(e) => {
+            if (e.key === 'Enter') {
+              this.props.handleEditName(
+                this.props.id,
+                list.name,
+              );
+              this.props.handleStartEditName(this.props.id);
+            }
+          }}
+        />
       );
     } else {
-      return (
-        <div className="list-title">
-          <h2>
-            {this.props.name}
-            <img
-              src={editSvg}
-              className="edit-svg"
-              alt="edit"
-              onClick={() => alert('not editing name')}
-            />
-          </h2>
-        </div>
-      );
+      name = list.name;
     }
+
+    return (
+      <div className="list-title">
+        <h2>
+          {name}
+        </h2>
+      </div>
+    );
+  }
+
+  /**
+   * [editNameButton description]
+   * @return {[type]} [description]
+   */
+  editNameButton() {
+    return (
+      <button
+        className="edit-btn"
+        onClick={() => this.props.handleStartEditName(this.props.id)}
+      >
+        <img
+          src={editSvg}
+          className="edit-svg"
+          alt="edit"
+        />
+      </button>
+    );
+  }
+
+  /**
+   * [removeButton description]
+   * @return {[type]} [description]
+   */
+  removeButton() {
+    return (
+      <button
+        className="delete-list-btn"
+        onClick={() => this.props.handleRemoveList(this.props.id)}
+      >
+        <img
+          src={deleteSvg}
+          className="delete-svg"
+          alt="edit"
+        />
+      </button>
+    );
+  }
+
+  /**
+   * [addItemButton description]
+   * @return {[type]} [description]
+   */
+  addItemButton() {
+    return (
+      <button
+        className="add-item-btn"
+        onClick={() => {
+          const id = this.props.id;
+          this.props.handleClick(id);
+        }}
+      >
+        <img
+          src={addSvg}
+          className="add-item-svg"
+          alt="edit"
+        />
+      </button>
+    );
   }
 
   /**
@@ -127,60 +198,99 @@ class TodoList extends React.Component {
   }
 
   /**
+   * [unfinishedCount description]
+   * @return {[type]} [description]
+   */
+  unfinishedCount() {
+    const items = this.props.list.items;
+    const n = items.length;
+    let count = 0;
+    for (let i = 0; i < n; i += 1) {
+      if (items[i].finished === false) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  /**
    * Rendering
    * @return {Element}
    */
   render() {
+    const list = this.props.list;
     return (
       <div className="container">
-        <div className="list-title">
-          <h2>
-            {this.props.name}
-            <img
-              src={editSvg}
-              className="edit-svg"
-              alt="edit"
-            />
-          </h2>
-        </div>
+        {this.removeButton()}
+        {this.editNameButton()}
+        <hr className="divider-up" />
 
+        {this.title()}
+        <hr className="divider-bottom" />
+        <ItemCount nOfItems={this.unfinishedCount()} />
         <List className="List">
           {this.list()}
         </List>
 
         <TextField
           hintText="new todo item"
-          value={this.props.inputValue}
+          value={list.inputValue}
           onChange={this.handleEdit}
           onKeyUp={this.handleKey}
         />
 
-        <br />
+        {this.addItemButton()}
 
-        <RaisedButton
-          className="add-todo-button"
-          onClick={() => {
-            const id = this.props.id;
-            this.props.handleClick(id);
-          }}
-        >
-          add todo
-        </RaisedButton>
+        <br />
       </div>
     );
   }
 }
 
+const p = React.PropTypes;
+
 TodoList.propTypes = {
-  id: React.PropTypes.number.isRequired,
-  name: React.PropTypes.string.isRequired,
-  inputValue: React.PropTypes.string.isRequired,
-  nOfItems: React.PropTypes.number.isRequired,
-  items: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  editingName: React.PropTypes.arrayOf(React.PropTypes.bool).isRequired,
-  handleEdit: React.PropTypes.func.isRequired,
-  handleClick: React.PropTypes.func.isRequired,
-  handleRemove: React.PropTypes.func.isRequired,
+  id: p.number.isRequired,
+  list: p.shape({
+    name: p.string.isRequired,
+    items: p.arrayOf(p.shape({
+      content: p.string.isRequired,
+      finished: p.bool.isRequired,
+    })).isRequired,
+    inputValue: p.string.isRequired,
+    editingName: p.bool.isRequired,
+  }).isRequired,
+  handleEdit: p.func.isRequired,
+  handleChecked: p.func.isRequired,
+  handleClick: p.func.isRequired,
+  handleRemove: p.func.isRequired,
+  handleRemoveList: p.func.isRequired,
+  handleStartEditName: p.func.isRequired,
+  handleEditName: p.func.isRequired,
+};
+
+
+/**
+ * ItemCount
+ * @param  {[type]} props [description]
+ * @return {[type]}       [description]
+ */
+function ItemCount(props) {
+  let setence = 'no todo left';
+  if (props.nOfItems === 1) {
+    setence = '1 todo left';
+  } else if (props.nOfItems > 1) {
+    setence = `${props.nOfItems} todos left`;
+  }
+  return (
+    <div>
+      <p className="item-count">{setence}</p>
+    </div>
+  );
+}
+
+ItemCount.propTypes = {
+  nOfItems: p.number.isRequired,
 };
 
 export default TodoList;

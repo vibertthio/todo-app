@@ -6,15 +6,20 @@ import React, { Component } from 'react'; // eslint-disable-line
  * @return {Element} react element
  */
 function TodoItem(props) {
+  const cls = props.item.finished ? 'item-finished' : '';
   return (
-    <div>
-      {props.content}
+    <div className={cls}>
+      {props.item.content}
     </div>
   );
 }
 
+const p = React.PropTypes;
 TodoItem.propTypes = {
-  content: React.PropTypes.string.isRequired,
+  item: p.shape({
+    content: p.string.isRequired,
+    finished: p.bool.isRequired,
+  }).isRequired,
 };
 
 export default TodoItem;
