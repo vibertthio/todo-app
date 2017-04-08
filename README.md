@@ -2,6 +2,8 @@
 
 This is an app used to manage multiple todo lists.
 
+![alt tag](https://github.com/vibertthio/todo-app/master/public/demo.png)
+
 ## Installation
 
 ```
