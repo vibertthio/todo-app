@@ -36,5 +36,4 @@ npm run start
 All right reserved by Vibert Thio.
 
 ## License
-
-MTI License
+MIT License
