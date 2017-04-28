@@ -1,5 +1,6 @@
 import React, { Component } from 'react'; // eslint-disable-line
 import RaisedButton from 'material-ui/RaisedButton';
+import cookie from 'react-cookie';
 
 import './App.css';
 import TodoList from './TodoList';
@@ -26,10 +27,37 @@ class TodoApp extends Component {
         lists: [],
       };
     }
+  }
 
-    // this.handleEdit = this.handleEdit.bind(this);
-    // this.handleNewItem = this.handleNewItem.bind(this);
-    // this.handleRemoveItem = this.handleRemoveItem.bind(this);
+  /**
+   * [componentWillMount description]
+   */
+  componentWillMount() {
+    const cookiesState = cookie.load('state');
+    if (cookiesState) this.state = cookiesState;
+  }
+
+  /**
+   * [componentDidMount description]
+   */
+  componentDidMount() {
+    this.saveCookie();
+  }
+
+  /**
+   * [componentDidUpdate description]
+   */
+  componentDidUpdate() {
+    this.saveCookie();
+  }
+
+  /**
+   * [saveCookie description]
+   */
+  saveCookie() {
+    cookie.save('state', this.state, {
+      path: '/',
+    });
   }
 
   /**
